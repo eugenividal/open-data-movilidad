@@ -25,9 +25,15 @@ https://www.mitma.gob.es/ministerio/covid-19/evolucion-movilidad-big-data/openda
 # Read the data
 dist_202102 = read.table(gzfile("datos/202102_maestra1_mitma_distrito/20210201_maestra_1_mitma_distrito.txt.gz"), header = TRUE, sep = "|")
 
+names(dist_202102)
+
+dist_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_distrito/20210201_maestra_2_mitma_distrito.txt.gz"), header = TRUE, sep = "|")
+
+names(dist_202102_2)
+
 muni_202102 = read.table(gzfile("datos/202102_maestra1_mitma_municipio/20210201_maestra_1_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
 
-names(dist_202102)
+muni_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_municipio/20210201_maestra_2_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
 
 muni = read.table("relaciones_municipio_mitma.csv", header = TRUE, sep = "|")
 dist = read.table("relaciones_distrito_mitma.csv", header = TRUE, sep = "|")
