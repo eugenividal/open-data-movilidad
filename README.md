@@ -15,11 +15,21 @@ you won’t be able to see the data!)
 # Read the data
 dist_202102 = read.table(gzfile("datos/202102_maestra1_mitma_distrito/20210201_maestra_1_mitma_distrito.txt.gz"), header = TRUE, sep = "|")
 
-names(dist_202102)
-##  [1] "fecha"             "origen"            "destino"          
-##  [4] "actividad_origen"  "actividad_destino" "residencia"       
-##  [7] "edad"              "periodo"           "distancia"        
-## [10] "viajes"            "viajes_km"
+head(dist_202102)
+##      fecha   origen  destino actividad_origen actividad_destino residencia edad
+## 1 20210201 01001_AM 01001_AM             casa             otros          1   NA
+## 2 20210201 01001_AM 01001_AM             casa             otros          1   NA
+## 3 20210201 01001_AM 01001_AM             casa             otros          1   NA
+## 4 20210201 01001_AM 01001_AM             casa             otros          1   NA
+## 5 20210201 01001_AM 01001_AM             casa             otros          1   NA
+## 6 20210201 01001_AM 01001_AM             casa             otros          1   NA
+##   periodo distancia viajes viajes_km
+## 1       0   002-005 13.241    50.442
+## 2       0   010-050  8.542   112.803
+## 3       1   002-005 13.241    60.358
+## 4       2   005-010  8.542    48.744
+## 5       3   005-010 13.241    86.924
+## 6       3   010-050 13.241   255.191
 
 dist_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_distrito/20210201_maestra_2_mitma_distrito.txt.gz"), header = TRUE, sep = "|")
 
