@@ -1,13 +1,13 @@
 open-data-movilidad
 ================
 
-This repository contains code to access transport data (based on the
-location of mobile phones) from the Ministry of Transport, Mobility and
-Urban Agenda (Spain).
+This repository contains code to access OD data (based on mobile phones
+locations) from the Ministry of Transport, Mobility and Urban Agenda
+(Spain).
 
-The raw data and some information on the method used can be found in the
-link below. (Do not use Chromium to open the link, you won’t be able to
-see the data!)
+The raw data and some information on the method used to collect the data
+can be found in the link below. (Do not use Chromium to open the link or
+you won’t be able to see the data!)
 
 <https://www.mitma.gob.es/ministerio/covid-19/evolucion-movilidad-big-data/opendata-movilidad>
 
