@@ -33,7 +33,11 @@ names(dist_202102_2)
 
 muni_202102 = read.table(gzfile("datos/202102_maestra1_mitma_municipio/20210201_maestra_1_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
 
+names(muni_202102)
+
 muni_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_municipio/20210201_maestra_2_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
+
+names(muni_202102_2)
 
 muni = read.table("relaciones_municipio_mitma.csv", header = TRUE, sep = "|")
 dist = read.table("relaciones_distrito_mitma.csv", header = TRUE, sep = "|")
@@ -44,14 +48,9 @@ zonificacion_dist <- sf::st_read(
 zonificacion_muni <- sf::st_read(
   "zonificacion_municipios/zonificacion-municipios/municipios_mitma.shp")
 
-codpro = read.table("codpro.csv", header = TRUE, sep = ",", check.names = F)
-
-codpro = codpro %>% 
-  mutate()
+# codpro = read.table("codpro.csv", header = TRUE, sep = ",", check.names = F)
 ```
 
 ```{r}
 plot(zonificacion_dist)
 ```
-
-

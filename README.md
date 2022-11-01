@@ -15,13 +15,27 @@ you won’t be able to see the data!)
 # Read the data
 dist_202102 = read.table(gzfile("datos/202102_maestra1_mitma_distrito/20210201_maestra_1_mitma_distrito.txt.gz"), header = TRUE, sep = "|")
 
-muni_202102 = read.table(gzfile("datos/202102_maestra1_mitma_municipio/20210201_maestra_1_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
-
 names(dist_202102)
 ##  [1] "fecha"             "origen"            "destino"          
 ##  [4] "actividad_origen"  "actividad_destino" "residencia"       
 ##  [7] "edad"              "periodo"           "distancia"        
 ## [10] "viajes"            "viajes_km"
+
+dist_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_distrito/20210201_maestra_2_mitma_distrito.txt.gz"), header = TRUE, sep = "|")
+
+names(dist_202102_2)
+## [1] "fecha"         "distrito"      "numero_viajes" "personas"
+
+muni_202102 = read.table(gzfile("datos/202102_maestra1_mitma_municipio/20210201_maestra_1_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
+
+names(muni_202102)
+## [1] "fecha"     "origen"    "destino"   "periodo"   "distancia" "viajes"   
+## [7] "viajes_km"
+
+muni_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_municipio/20210201_maestra_2_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
+
+names(muni_202102_2)
+## [1] "fecha"         "distrito"      "numero_viajes" "personas"
 
 muni = read.table("relaciones_municipio_mitma.csv", header = TRUE, sep = "|")
 dist = read.table("relaciones_distrito_mitma.csv", header = TRUE, sep = "|")
@@ -48,10 +62,7 @@ zonificacion_muni <- sf::st_read(
 ## Bounding box:  xmin: -1004502 ymin: 3132130 xmax: 1126931 ymax: 4859240
 ## Projected CRS: ETRS89_UTM_zone_30N_N_E
 
-codpro = read.table("codpro.csv", header = TRUE, sep = ",", check.names = F)
-
-codpro = codpro %>% 
-  mutate()
+# codpro = read.table("codpro.csv", header = TRUE, sep = ",", check.names = F)
 ```
 
 ``` r
