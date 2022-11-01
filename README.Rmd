@@ -1,0 +1,51 @@
+---
+title: "open-data-movilidad"
+output: github_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE)
+library(tidyverse)
+library(tmap)
+library(kableExtra)
+tmap_mode("view")
+sf::sf_use_s2(FALSE)
+```
+
+
+This repository contains code to access transport data (based on the location of mobile phones) from the Ministry of Transport, Mobility and Urban Agenda (Spain). 
+
+The raw data and some information on the method used can be found in the link below. (Do not use Chromium to open the link, you won't be able to see the data!)
+
+https://www.mitma.gob.es/ministerio/covid-19/evolucion-movilidad-big-data/opendata-movilidad 
+
+
+```{r}
+# Read the data
+dist_202102 = read.table(gzfile("datos/202102_maestra1_mitma_distrito/20210201_maestra_1_mitma_distrito.txt.gz"), header = TRUE, sep = "|")
+
+muni_202102 = read.table(gzfile("datos/202102_maestra1_mitma_municipio/20210201_maestra_1_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
+
+names(dist_202102)
+
+muni = read.table("relaciones_municipio_mitma.csv", header = TRUE, sep = "|")
+dist = read.table("relaciones_distrito_mitma.csv", header = TRUE, sep = "|")
+
+zonificacion_dist <- sf::st_read(
+  "zonificacion_distritos/zonificacion-distritos/distritos_mitma.shp")
+
+zonificacion_muni <- sf::st_read(
+  "zonificacion_municipios/zonificacion-municipios/municipios_mitma.shp")
+
+codpro = read.table("codpro.csv", header = TRUE, sep = ",", check.names = F)
+
+codpro = codpro %>% 
+  mutate()
+```
+
+```{r}
+plot(zonificacion_dist)
+```
+
+
