@@ -1,6 +1,8 @@
 ---
 title: "open-data-movilidad"
-output: github_document
+output: 
+  github_document:
+    html_preview: true
 ---
 
 ```{r, include = FALSE}
