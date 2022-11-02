@@ -9,7 +9,7 @@ The raw data and some information on the method used to collect the data
 can be found in the link below. (Do not use Chromium to open the link or
 you won’t be able to see the data!)
 
-If this data is being updated, it could be useful to create an r package to download the data.
+If this data is going to be periodically updated, the creation of a data r package could be beneficial.
 
 <https://www.mitma.gob.es/ministerio/covid-19/evolucion-movilidad-big-data/opendata-movilidad>
 
@@ -106,4 +106,4 @@ qtm(dist_202102_5, "num. trips <10 km")
 
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-*Fig 1: Number of trips under 10 km by district on February 2021*
+**Fig 1: Number of trips under 10 km by district on February 2021**
