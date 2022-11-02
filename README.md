@@ -83,7 +83,7 @@ dist_202102_2 = dist_202102 %>%
 dist_202102_3 = dist_202102_2 %>% 
   filter(distancia == "002-005" | distancia == "005-010") %>% 
   group_by(origen, prov_O, dist_O) %>% 
-  summarise("nombre de viatges <10 km"= sum(viajes))
+  summarise("num. trips <10 km"= sum(viajes))
 ## `summarise()` has grouped output by 'origen', 'prov_O'. You can override using
 ## the `.groups` argument.
 
@@ -100,10 +100,9 @@ dist_202102_5 = dist_202102_4 %>%
 dist_202102_5 = st_sf(dist_202102_5)
 
 
-qtm(dist_202102_5, "nombre de viatges <10 km")
+qtm(dist_202102_5, "num. trips <10 km")
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-Figura 1: Nombre de viatges de menys de 10 km per districtes durant el
-mes de febrer de 2021
+Fig 1: Number of trips under 10 km by district on February 2021
