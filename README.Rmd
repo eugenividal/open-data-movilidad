@@ -72,8 +72,7 @@ dist_202102_4 = dist_202102_3 %>%
 
 # Filter the Catalan Countries
 dist_202102_5 = dist_202102_4 %>% 
-   filter(prov_O == "03" | prov_O == "46" | prov_O == "12" | prov_O == "43" | prov_O == "08"  | prov_O == "25"  | prov_O == "17"
-          | prov_O == "07")
+   filter(prov_O == "03" | prov_O == "46" | prov_O == "12")
 
 # Plot map
 dist_202102_5 = st_sf(dist_202102_5)
