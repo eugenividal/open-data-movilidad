@@ -81,3 +81,5 @@ dist_202102_5 = st_sf(dist_202102_5)
 
 qtm(dist_202102_5, "nombre de viatges <10 km")
 ```
+
+Figura 1: Nombre de viatges de menys de 10 km per districtes durant el mes de febrer de 2021

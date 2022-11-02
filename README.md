@@ -104,3 +104,6 @@ qtm(dist_202102_5, "nombre de viatges <10 km")
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+Figura 1: Nombre de viatges de menys de 10 km per districtes durant el
+mes de febrer de 2021
