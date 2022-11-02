@@ -29,96 +29,58 @@ https://www.mitma.gob.es/ministerio/covid-19/evolucion-movilidad-big-data/openda
 ```{r}
 # Read the data
 dist_202102 = read.table(gzfile("datos/202102_maestra1_mitma_distrito/20210201_maestra_1_mitma_distrito.txt.gz"), header = TRUE, sep = "|")
-
 head(dist_202102)
+# dist_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_distrito/20210201_maestra_2_mitma_distrito.txt.gz"), header = TRUE, sep = "|")
+# names(dist_202102_2)
+# muni_202102 = read.table(gzfile("datos/202102_maestra1_mitma_municipio/20210201_maestra_1_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
+# names(muni_202102)
+# muni_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_municipio/20210201_maestra_2_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
+# names(muni_202102_2)
 
-dist_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_distrito/20210201_maestra_2_mitma_distrito.txt.gz"), header = TRUE, sep = "|")
-
-names(dist_202102_2)
-
-muni_202102 = read.table(gzfile("datos/202102_maestra1_mitma_municipio/20210201_maestra_1_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
-
-names(muni_202102)
-
-muni_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_municipio/20210201_maestra_2_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
-
-names(muni_202102_2)
-
-muni = read.table("relaciones_municipio_mitma.csv", header = TRUE, sep = "|")
 dist = read.table("relaciones_distrito_mitma.csv", header = TRUE, sep = "|")
+# muni = read.table("relaciones_municipio_mitma.csv", header = TRUE, sep = "|")
 
 zonificacion_dist <- sf::st_read(
   "zonificacion_distritos/zonificacion-distritos/distritos_mitma.shp")
-
-zonificacion_muni <- sf::st_read(
-  "zonificacion_municipios/zonificacion-municipios/municipios_mitma.shp")
+# zonificacion_muni <- sf::st_read(
+#   "zonificacion_municipios/zonificacion-municipios/municipios_mitma.shp")
 
 cod_pro = read.table("cod_ccaa_pro.csv", header = TRUE, sep = ",")
 ```
 
 ```{r}
 # create province and district origin
-dist_202102_2 = dist_202102 %>% 
+dist_202102 = dist_202102 %>% 
   # slice_head(n = 10) %>%
   separate(origen, into = c("prov_O", "dist_O"), sep = 2, remove = FALSE)  
 
 # filter potetial cyclable trips (< 10km) and group by district
-dist_202102_3 = dist_202102_2 %>% 
+dist_202102 = dist_202102 %>% 
   filter(distancia == "002-005" | distancia == "005-010") %>% 
   group_by(origen, prov_O, dist_O) %>% 
   summarise("num. trips <10 km"= sum(viajes))
 
 # add geometry and province and region tags
-dist_202102_4 = dist_202102_3 %>% 
+dist_202102 = dist_202102 %>% 
   left_join(zonificacion_dist, by = c("origen" = "ID"))
-
-dist_202102_4$prov_O = as.numeric(dist_202102_4$prov_O)
-
-dist_202102_4 = dist_202102_4 %>% 
+dist_202102$prov_O = as.numeric(dist_202102$prov_O)
+dist_202102 = dist_202102 %>% 
   left_join(cod_pro, by = c("prov_O" = "Cod_Provincia"))
 
-table(dist_202102_4$Nom_CCAA)
-
-# filter Valencian Country
-dist_202102_5 = dist_202102_4 %>% 
-   filter(Nom_CCAA == "COMUNIDAD VALENCIANA")
+table(dist_202102$Nom_CCAA)
 
 # make map plottable
-dist_202102_5 = st_sf(dist_202102_5)
+dist_202102 = st_sf(dist_202102)
+```
+
+```{r}
+# filter Valencian Country
+dist_202102_CV = dist_202102 %>% 
+   filter(Nom_CCAA == "COMUNIDAD VALENCIANA")
 
 # plot map
-qtm(dist_202102_5, "num. trips <10 km")
+qtm(dist_202102_CV, "num. trips <10 km")
 ```
 
 *Fig 1: Number of trips under 10 km by district (during February 2021) Valencian Country*
-
-```{r}
-# filter Valencian Country
-dist_202102_5 = dist_202102_4 %>% 
-   filter(Nom_CCAA == "COMUNIDAD AUTONOMA DE CATALUNA")
-
-# make map plottable
-dist_202102_5 = st_sf(dist_202102_5)
-
-# plot map
-qtm(dist_202102_5, "num. trips <10 km")
-```
-
-*Fig 2: Number of trips under 10 km by district (during February 2021) Catalunya*
-
-```{r}
-
-# filter Valencian Country
-dist_202102_5 = dist_202102_4 %>% 
-   filter(Nom_CCAA == "COMUNIDAD AUTONOMA DE ILLES BALEARS")
-
-# make map plottable
-dist_202102_5 = st_sf(dist_202102_5)
-
-# plot map
-qtm(dist_202102_5, "num. trips <10 km")
-```
-
-*Fig 3: Number of trips under 10 km by district (during February 2021) Balearic Islands*
-
 

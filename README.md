@@ -9,12 +9,14 @@ The raw data and some information on the method used to collect the data
 can be found in the link below. (Do not use Chromium to open the link or
 you won’t be able to see the data!)
 
+If this data is periodically updated, it may be worth it to create a
+data r package.
+
 <https://www.mitma.gob.es/ministerio/covid-19/evolucion-movilidad-big-data/opendata-movilidad>
 
 ``` r
 # Read the data
 dist_202102 = read.table(gzfile("datos/202102_maestra1_mitma_distrito/20210201_maestra_1_mitma_distrito.txt.gz"), header = TRUE, sep = "|")
-
 head(dist_202102)
 ##      fecha   origen  destino actividad_origen actividad_destino residencia edad
 ## 1 20210201 01001_AM 01001_AM             casa             otros          1   NA
@@ -30,25 +32,15 @@ head(dist_202102)
 ## 4       2   005-010  8.542    48.744
 ## 5       3   005-010 13.241    86.924
 ## 6       3   010-050 13.241   255.191
+# dist_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_distrito/20210201_maestra_2_mitma_distrito.txt.gz"), header = TRUE, sep = "|")
+# names(dist_202102_2)
+# muni_202102 = read.table(gzfile("datos/202102_maestra1_mitma_municipio/20210201_maestra_1_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
+# names(muni_202102)
+# muni_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_municipio/20210201_maestra_2_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
+# names(muni_202102_2)
 
-dist_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_distrito/20210201_maestra_2_mitma_distrito.txt.gz"), header = TRUE, sep = "|")
-
-names(dist_202102_2)
-## [1] "fecha"         "distrito"      "numero_viajes" "personas"
-
-muni_202102 = read.table(gzfile("datos/202102_maestra1_mitma_municipio/20210201_maestra_1_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
-
-names(muni_202102)
-## [1] "fecha"     "origen"    "destino"   "periodo"   "distancia" "viajes"   
-## [7] "viajes_km"
-
-muni_202102_2 = read.table(gzfile("datos/202102_maestra2_mitma_municipio/20210201_maestra_2_mitma_municipio.txt.gz"), header = TRUE, sep = "|")
-
-names(muni_202102_2)
-## [1] "fecha"         "distrito"      "numero_viajes" "personas"
-
-muni = read.table("relaciones_municipio_mitma.csv", header = TRUE, sep = "|")
 dist = read.table("relaciones_distrito_mitma.csv", header = TRUE, sep = "|")
+# muni = read.table("relaciones_municipio_mitma.csv", header = TRUE, sep = "|")
 
 zonificacion_dist <- sf::st_read(
   "zonificacion_distritos/zonificacion-distritos/distritos_mitma.shp")
@@ -60,29 +52,20 @@ zonificacion_dist <- sf::st_read(
 ## Dimension:     XY
 ## Bounding box:  xmin: -1004502 ymin: 3132130 xmax: 1126931 ymax: 4859240
 ## Projected CRS: ETRS89_UTM_zone_30N_N_E
-
-zonificacion_muni <- sf::st_read(
-  "zonificacion_municipios/zonificacion-municipios/municipios_mitma.shp")
-## Reading layer `municipios_mitma' from data source 
-##   `/home/eugeni/Documents/open-data-movilidad/zonificacion_municipios/zonificacion-municipios/municipios_mitma.shp' 
-##   using driver `ESRI Shapefile'
-## Simple feature collection with 2205 features and 1 field
-## Geometry type: MULTIPOLYGON
-## Dimension:     XY
-## Bounding box:  xmin: -1004502 ymin: 3132130 xmax: 1126931 ymax: 4859240
-## Projected CRS: ETRS89_UTM_zone_30N_N_E
+# zonificacion_muni <- sf::st_read(
+#   "zonificacion_municipios/zonificacion-municipios/municipios_mitma.shp")
 
 cod_pro = read.table("cod_ccaa_pro.csv", header = TRUE, sep = ",")
 ```
 
 ``` r
 # create province and district origin
-dist_202102_2 = dist_202102 %>% 
+dist_202102 = dist_202102 %>% 
   # slice_head(n = 10) %>%
   separate(origen, into = c("prov_O", "dist_O"), sep = 2, remove = FALSE)  
 
 # filter potetial cyclable trips (< 10km) and group by district
-dist_202102_3 = dist_202102_2 %>% 
+dist_202102 = dist_202102 %>% 
   filter(distancia == "002-005" | distancia == "005-010") %>% 
   group_by(origen, prov_O, dist_O) %>% 
   summarise("num. trips <10 km"= sum(viajes))
@@ -90,15 +73,13 @@ dist_202102_3 = dist_202102_2 %>%
 ## the `.groups` argument.
 
 # add geometry and province and region tags
-dist_202102_4 = dist_202102_3 %>% 
+dist_202102 = dist_202102 %>% 
   left_join(zonificacion_dist, by = c("origen" = "ID"))
-
-dist_202102_4$prov_O = as.numeric(dist_202102_4$prov_O)
-
-dist_202102_4 = dist_202102_4 %>% 
+dist_202102$prov_O = as.numeric(dist_202102$prov_O)
+dist_202102 = dist_202102 %>% 
   left_join(cod_pro, by = c("prov_O" = "Cod_Provincia"))
 
-table(dist_202102_4$Nom_CCAA)
+table(dist_202102$Nom_CCAA)
 ## 
 ##                          CIUDAD DE CEUTA 
 ##                                        6 
@@ -139,52 +120,20 @@ table(dist_202102_4$Nom_CCAA)
 ##                         REGION DE MURCIA 
 ##                                       56
 
-# filter Valencian Country
-dist_202102_5 = dist_202102_4 %>% 
-   filter(Nom_CCAA == "COMUNIDAD VALENCIANA")
-
 # make map plottable
-dist_202102_5 = st_sf(dist_202102_5)
-
-# plot map
-qtm(dist_202102_5, "num. trips <10 km")
+dist_202102 = st_sf(dist_202102)
 ```
-
-![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
-
-*Fig 1: Number of trips under 10 km by district (during February 2021)
-Valencian Country*
 
 ``` r
 # filter Valencian Country
-dist_202102_5 = dist_202102_4 %>% 
-   filter(Nom_CCAA == "COMUNIDAD AUTONOMA DE CATALUNA")
-
-# make map plottable
-dist_202102_5 = st_sf(dist_202102_5)
+dist_202102_CV = dist_202102 %>% 
+   filter(Nom_CCAA == "COMUNIDAD VALENCIANA")
 
 # plot map
-qtm(dist_202102_5, "num. trips <10 km")
+qtm(dist_202102_CV, "num. trips <10 km")
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
-*Fig 2: Number of trips under 10 km by district (during February 2021)
-Catalunya*
-
-``` r
-# filter Valencian Country
-dist_202102_5 = dist_202102_4 %>% 
-   filter(Nom_CCAA == "COMUNIDAD AUTONOMA DE ILLES BALEARS")
-
-# make map plottable
-dist_202102_5 = st_sf(dist_202102_5)
-
-# plot map
-qtm(dist_202102_5, "num. trips <10 km")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
-
-*Fig 3: Number of trips under 10 km by district (during February 2021)
-Balearic Islands*
+*Fig 1: Number of trips under 10 km by district (during February 2021)
+Valencian Country*
