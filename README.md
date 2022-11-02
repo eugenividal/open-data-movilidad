@@ -71,6 +71,8 @@ zonificacion_muni <- sf::st_read(
 ## Dimension:     XY
 ## Bounding box:  xmin: -1004502 ymin: 3132130 xmax: 1126931 ymax: 4859240
 ## Projected CRS: ETRS89_UTM_zone_30N_N_E
+
+cod_pro = read.table("cod_ccaa_pro.csv", header = TRUE, sep = ",")
 ```
 
 ``` r
@@ -87,13 +89,59 @@ dist_202102_3 = dist_202102_2 %>%
 ## `summarise()` has grouped output by 'origen', 'prov_O'. You can override using
 ## the `.groups` argument.
 
-# add geometry
+# add geometry and province and region tags
 dist_202102_4 = dist_202102_3 %>% 
   left_join(zonificacion_dist, by = c("origen" = "ID"))
 
+dist_202102_4$prov_O = as.numeric(dist_202102_4$prov_O)
+
+dist_202102_4 = dist_202102_4 %>% 
+  left_join(cod_pro, by = c("prov_O" = "Cod_Provincia"))
+
+table(dist_202102_4$Nom_CCAA)
+## 
+##                          CIUDAD DE CEUTA 
+##                                        6 
+##                        CIUDAD DE MELILLA 
+##                                        7 
+##          COMUNIDAD AUTONOMA DE ANDALUCIA 
+##                                      504 
+##             COMUNIDAD AUTONOMA DE ARAGON 
+##                                      100 
+##           COMUNIDAD AUTONOMA DE CANARIAS 
+##                                       97 
+##          COMUNIDAD AUTONOMA DE CANTABRIA 
+##                                       52 
+##    COMUNIDAD AUTONOMA DE CASTILLA Y LEON 
+##                                      247 
+## COMUNIDAD AUTONOMA DE CASTILLA-LA MANCHA 
+##                                      196 
+##           COMUNIDAD AUTONOMA DE CATALUNA 
+##                                      440 
+##        COMUNIDAD AUTONOMA DE EXTREMADURA 
+##                                      111 
+##            COMUNIDAD AUTONOMA DE GALICIA 
+##                                      213 
+##      COMUNIDAD AUTONOMA DE ILLES BALEARS 
+##                                       55 
+##           COMUNIDAD AUTONOMA DE LA RIOJA 
+##                                       25 
+##        COMUNIDAD AUTONOMA DEL PAIS VASCO 
+##                                      139 
+##                      COMUNIDAD DE MADRID 
+##                                      161 
+##               COMUNIDAD FORAL DE NAVARRA 
+##                                       63 
+##                     COMUNIDAD VALENCIANA 
+##                                      295 
+##                   PRINCIPADO DE ASTURIAS 
+##                                       63 
+##                         REGION DE MURCIA 
+##                                       56
+
 # filter Valencian Country
 dist_202102_5 = dist_202102_4 %>% 
-   filter(prov_O == "03" | prov_O == "46" | prov_O == "12")
+   filter(Nom_CCAA == "COMUNIDAD VALENCIANA")
 
 # make map plottable
 dist_202102_5 = st_sf(dist_202102_5)
@@ -104,4 +152,39 @@ qtm(dist_202102_5, "num. trips <10 km")
 
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-*Fig 1: Number of trips under 10 km by district on February 2021*
+*Fig 1: Number of trips under 10 km by district (during February 2021)
+Valencian Country*
+
+``` r
+# filter Valencian Country
+dist_202102_5 = dist_202102_4 %>% 
+   filter(Nom_CCAA == "COMUNIDAD AUTONOMA DE CATALUNA")
+
+# make map plottable
+dist_202102_5 = st_sf(dist_202102_5)
+
+# plot map
+qtm(dist_202102_5, "num. trips <10 km")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+*Fig 2: Number of trips under 10 km by district (during February 2021)
+Catalunya*
+
+``` r
+# filter Valencian Country
+dist_202102_5 = dist_202102_4 %>% 
+   filter(Nom_CCAA == "COMUNIDAD AUTONOMA DE ILLES BALEARS")
+
+# make map plottable
+dist_202102_5 = st_sf(dist_202102_5)
+
+# plot map
+qtm(dist_202102_5, "num. trips <10 km")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+*Fig 3: Number of trips under 10 km by district (during February 2021)
+Balearic Islands*

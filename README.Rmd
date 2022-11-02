@@ -51,7 +51,7 @@ zonificacion_dist <- sf::st_read(
 zonificacion_muni <- sf::st_read(
   "zonificacion_municipios/zonificacion-municipios/municipios_mitma.shp")
 
-
+cod_pro = read.table("cod_ccaa_pro.csv", header = TRUE, sep = ",")
 ```
 
 ```{r}
@@ -66,13 +66,20 @@ dist_202102_3 = dist_202102_2 %>%
   group_by(origen, prov_O, dist_O) %>% 
   summarise("num. trips <10 km"= sum(viajes))
 
-# add geometry
+# add geometry and province and region tags
 dist_202102_4 = dist_202102_3 %>% 
   left_join(zonificacion_dist, by = c("origen" = "ID"))
 
+dist_202102_4$prov_O = as.numeric(dist_202102_4$prov_O)
+
+dist_202102_4 = dist_202102_4 %>% 
+  left_join(cod_pro, by = c("prov_O" = "Cod_Provincia"))
+
+table(dist_202102_4$Nom_CCAA)
+
 # filter Valencian Country
 dist_202102_5 = dist_202102_4 %>% 
-   filter(prov_O == "03" | prov_O == "46" | prov_O == "12")
+   filter(Nom_CCAA == "COMUNIDAD VALENCIANA")
 
 # make map plottable
 dist_202102_5 = st_sf(dist_202102_5)
@@ -81,4 +88,35 @@ dist_202102_5 = st_sf(dist_202102_5)
 qtm(dist_202102_5, "num. trips <10 km")
 ```
 
-*Fig 1: Number of trips under 10 km by district on February 2021*
+*Fig 1: Number of trips under 10 km by district (during February 2021) Valencian Country*
+
+```{r}
+# filter Valencian Country
+dist_202102_5 = dist_202102_4 %>% 
+   filter(Nom_CCAA == "COMUNIDAD AUTONOMA DE CATALUNA")
+
+# make map plottable
+dist_202102_5 = st_sf(dist_202102_5)
+
+# plot map
+qtm(dist_202102_5, "num. trips <10 km")
+```
+
+*Fig 2: Number of trips under 10 km by district (during February 2021) Catalunya*
+
+```{r}
+
+# filter Valencian Country
+dist_202102_5 = dist_202102_4 %>% 
+   filter(Nom_CCAA == "COMUNIDAD AUTONOMA DE ILLES BALEARS")
+
+# make map plottable
+dist_202102_5 = st_sf(dist_202102_5)
+
+# plot map
+qtm(dist_202102_5, "num. trips <10 km")
+```
+
+*Fig 3: Number of trips under 10 km by district (during February 2021) Balearic Islands*
+
+
