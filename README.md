@@ -71,12 +71,36 @@ zonificacion_muni <- sf::st_read(
 ## Dimension:     XY
 ## Bounding box:  xmin: -1004502 ymin: 3132130 xmax: 1126931 ymax: 4859240
 ## Projected CRS: ETRS89_UTM_zone_30N_N_E
-
-# codpro = read.table("codpro.csv", header = TRUE, sep = ",", check.names = F)
 ```
 
 ``` r
-plot(zonificacion_dist)
+# create province and district origin
+dist_202102_2 = dist_202102 %>% 
+  # slice_head(n = 10) %>%
+  separate(origen, into = c("prov_O", "dist_O"), sep = 2, remove = FALSE)  
+
+#filter potetial cyclable trips (< 10km) 
+dist_202102_3 = dist_202102_2 %>% 
+  filter(distancia == "002-005" | distancia == "005-010") %>% 
+  group_by(origen, prov_O, dist_O) %>% 
+  summarise("nombre de viatges <10 km"= sum(viajes))
+## `summarise()` has grouped output by 'origen', 'prov_O'. You can override using
+## the `.groups` argument.
+
+# add geometry origin
+dist_202102_4 = dist_202102_3 %>% 
+  left_join(zonificacion_dist, by = c("origen" = "ID"))
+
+# Filter the Catalan Countries
+dist_202102_5 = dist_202102_4 %>% 
+   filter(prov_O == "03" | prov_O == "46" | prov_O == "12" | prov_O == "43" | prov_O == "08"  | prov_O == "25"  | prov_O == "17"
+          | prov_O == "07")
+
+# Plot map
+dist_202102_5 = st_sf(dist_202102_5)
+
+
+qtm(dist_202102_5, "nombre de viatges <10 km")
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
