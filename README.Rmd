@@ -60,25 +60,25 @@ dist_202102_2 = dist_202102 %>%
   # slice_head(n = 10) %>%
   separate(origen, into = c("prov_O", "dist_O"), sep = 2, remove = FALSE)  
 
-#filter potetial cyclable trips (< 10km) 
+# filter potetial cyclable trips (< 10km) and group by district
 dist_202102_3 = dist_202102_2 %>% 
   filter(distancia == "002-005" | distancia == "005-010") %>% 
   group_by(origen, prov_O, dist_O) %>% 
   summarise("num. trips <10 km"= sum(viajes))
 
-# add geometry origin
+# add geometry
 dist_202102_4 = dist_202102_3 %>% 
   left_join(zonificacion_dist, by = c("origen" = "ID"))
 
-# Filter the Catalan Countries
+# filter Valencian Country
 dist_202102_5 = dist_202102_4 %>% 
    filter(prov_O == "03" | prov_O == "46" | prov_O == "12")
 
-# Plot map
+# make map plottable
 dist_202102_5 = st_sf(dist_202102_5)
 
-
+# plot map
 qtm(dist_202102_5, "num. trips <10 km")
 ```
 
-Fig 1: Number of trips under 10 km by district on February 2021
+*Fig 1: Number of trips under 10 km by district on February 2021*
