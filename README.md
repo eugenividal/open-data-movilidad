@@ -106,4 +106,4 @@ qtm(dist_202102_5, "num. trips <10 km")
 
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-**Fig 1: Number of trips under 10 km by district on February 2021**
+**Fig 1: Number of trips under 10 km by district during February 2021**
